@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const app = express();
+const { prompt } = require('./prompt');
 
 // Read the SSL certificate files
 const privateKey = fs.readFileSync(
@@ -61,14 +62,17 @@ function validateAndUpdateApiKey(apiKey) {
 }
 
 // Route to handle POST requests with API key validation
-app.post('/api', (req, res) => {
+app.post('/api', async (req, res) => {
     const prompt = req.body.prompt;
     const apiKey = req.header('x-api-key');
 
     if (prompt && apiKey) {
         const isValid = validateAndUpdateApiKey(apiKey);
         console.log(`API key valid: ${isValid}`);
-        res.status(200).json({ success: isValid });
+        if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
+
+        let response = await prompt(prompt);
+        res.json(response);
     } else {
         res.status(400).json({ error: 'Invalid request' });
     }
