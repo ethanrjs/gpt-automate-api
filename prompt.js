@@ -26,6 +26,7 @@ Do not minify code, try to format it as much as possible with tabs and newline c
 DEL_PATH can delete files AND folders.
 MOV_PATH can move files AND folders as well as rename them.
 Assume prompt files are the ones in the workspace.
+IT IS VITAL THAT YOU DO NOT REPLY WITH ANYTHING OTHER THAN THE 7 COMMANDS. ALL ARGS MUST BE IN QUOTES.
 Workspace Files: `;
 
 async function prompt(json) {
@@ -37,12 +38,12 @@ async function prompt(json) {
             model: 'gpt-3.5-turbo',
             messages: [
                 {
+                    role: 'system',
+                    content: PRE_PROMPT + json.workspaceFiles
+                },
+                {
                     role: 'user',
-                    content:
-                        PRE_PROMPT +
-                        json.workspaceFiles +
-                        '\nYour Prompt: ' +
-                        json.prompt
+                    content: json.prompt
                 }
             ]
         })
