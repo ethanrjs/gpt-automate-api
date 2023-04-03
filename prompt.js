@@ -49,6 +49,7 @@ async function prompt(json) {
         .then(
             data => {
                 res = data.data.choices[0].message.content;
+                tokensUsed = data.data.usage.total_tokens;
             },
             error => {
                 vscode.window.showErrorMessage(
@@ -61,7 +62,10 @@ async function prompt(json) {
 
     console.log(`Response: ${res}`);
 
-    return res;
+    return {
+        response: res,
+        tokensUsed: tokensUsed
+    };
 }
 
 module.exports = {

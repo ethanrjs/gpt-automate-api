@@ -76,7 +76,19 @@ app.post('/api', async (req, res) => {
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
 
         let response = await prompt(req.body);
-        res.json(response);
+        // add response.tokensUsed to the apiKeys.json file
+        const apiKeys = readApiKeys();
+        const encryptedApiKey = crypto
+            .createHash('sha256')
+            .update(apiKey)
+            .digest('hex');
+        const apiKeyEntry = apiKeys.find(
+            entry => entry.apiKey === encryptedApiKey
+        );
+        apiKeyEntry.tokensGiven += response.tokensUsed;
+        writeApiKeys(apiKeys);
+
+        res.json(response.response);
     } else {
         console.log('Invalid request');
         console.log('prompt: "', chalk.green(requestPrompt)) + '"';
