@@ -63,7 +63,7 @@ function validateAndUpdateApiKey(apiKey) {
 
 // Route to handle POST requests with API key validation
 app.post('/api', async (req, res) => {
-    const prompt = req.body.prompt;
+    const requestPrompt = req.body.prompt;
     const apiKey = req.header('x-api-key');
 
     if (prompt && apiKey) {
@@ -71,7 +71,7 @@ app.post('/api', async (req, res) => {
         console.log(`API key valid: ${isValid}`);
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
 
-        let response = await prompt(prompt);
+        let response = await prompt(requestPrompt);
         res.json(response);
     } else {
         res.status(400).json({ error: 'Invalid request' });
