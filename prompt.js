@@ -29,6 +29,7 @@ Assume prompt files are the ones in the workspace.
 Workspace Files: `;
 
 async function prompt(json) {
+    console.log(`Received prompt: ${json.prompt}`);
     // Query
     let res = '';
     await openapi
@@ -57,6 +58,8 @@ async function prompt(json) {
                 console.error(error.response.data);
             }
         );
+
+    console.log(`Response: ${res}`);
 
     return res;
 }

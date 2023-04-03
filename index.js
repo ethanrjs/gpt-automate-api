@@ -74,6 +74,7 @@ app.post('/api', async (req, res) => {
         let response = await prompt(requestPrompt);
         res.json(response);
     } else {
+        console.log('Invalid request');
         res.status(400).json({ error: 'Invalid request' });
     }
 });
