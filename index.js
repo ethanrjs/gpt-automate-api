@@ -67,10 +67,10 @@ app.post('/api', async (req, res) => {
     const requestPrompt = req.body.prompt;
     const apiKey = req.header('x-api-key').trim().toLowerCase();
 
-    const prompt = requestPrompt && requestPrompt.length > 0;
-    const key = apiKey && apiKey.length > 0;
+    const promptIsValid = requestPrompt && requestPrompt.length > 0;
+    const keyIsValid = apiKey && apiKey.length > 0;
 
-    if (prompt && key) {
+    if (promptIsValid && keyIsValid) {
         const isValid = validateAndUpdateApiKey(apiKey);
         console.log(`API key valid: ${isValid}`);
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
