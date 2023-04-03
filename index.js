@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const chalk = require('chalk');
 const app = express();
-const { prompt } = require('./prompt');
+const { prompt } = require('./prompt.js');
 
 // Read the SSL certificate files
 const privateKey = fs.readFileSync(

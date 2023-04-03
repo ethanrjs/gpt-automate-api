@@ -64,4 +64,6 @@ async function prompt(json) {
     return res;
 }
 
-module.exports = prompt;
+module.exports = {
+    prompt
+};
