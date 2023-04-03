@@ -75,7 +75,7 @@ app.post('/api', async (req, res) => {
         console.log(`API key valid: ${isValid}`);
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
 
-        let response = await prompt(requestPrompt);
+        let response = await prompt(req.body);
         res.json(response);
     } else {
         console.log('Invalid request');
