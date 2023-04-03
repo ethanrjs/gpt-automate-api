@@ -52,13 +52,18 @@ async function prompt(json) {
 
     let res = '';
     await openapi
-        .createCompletion({
-            model: 'gpt-4',
-            prompt:
-                PRE_PROMPT +
-                json.workspaceFiles +
-                ' Your Prompt: ' +
-                json.prompt
+        .createChatCompletion({
+            model: 'gpt-3.5-turbo',
+            messages: [
+                {
+                    role: 'user',
+                    content:
+                        PRE_PROMPT +
+                        json.workspaceFiles +
+                        ' Prompt: ' +
+                        json.prompt
+                }
+            ]
         })
         .then(
             data => {
