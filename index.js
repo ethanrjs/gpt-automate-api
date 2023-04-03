@@ -74,6 +74,11 @@ app.post('/api', (req, res) => {
     }
 });
 
+// test endpoint at /
+app.get('/', (req, res) => {
+    res.send('vscode-gpt-automate API up and running!');
+});
+
 // Create the HTTPS server
 const httpsServer = https.createServer(credentials, app);
 
