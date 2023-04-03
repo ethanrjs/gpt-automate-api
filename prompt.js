@@ -52,9 +52,6 @@ async function prompt(json) {
                 tokensUsed = data.data.usage.total_tokens;
             },
             error => {
-                vscode.window.showErrorMessage(
-                    `Error querying OpenAI API: ${error.message}`
-                );
                 console.log('\n\nERROR QUERYING OPENAI vvvvvvvvv\n\n');
                 console.error(error.response.data);
             }
