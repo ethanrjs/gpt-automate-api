@@ -1,7 +1,7 @@
 const openai = require('openai');
 const configuration = new openai.Configuration({
     organization: 'org-5SQeLQ8rfWqdoiHmo77XPzir',
-    apiKey: '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'
+    apiKey: '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'
 });
 const openapi = new openai.OpenAIApi(configuration);
 const PRE_PROMPT = `You are converting prompts into commands. Here are the 7 possible commands:
