@@ -3,6 +3,7 @@ const https = require('https');
 const express = require('express');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
+const chalk = require('chalk');
 const app = express();
 const { prompt } = require('./prompt');
 
@@ -75,6 +76,10 @@ app.post('/api', async (req, res) => {
         res.json(response);
     } else {
         console.log('Invalid request');
+        console.log('prompt:', chalk.green(requestPrompt));
+        console.log('apiKey:', chalk.blue(apiKey));
+        console.log('req.body:', chalk.red(JSON.stringify(req.body, null, 2)));
+
         res.status(400).json({ error: 'Invalid request' });
     }
 });
