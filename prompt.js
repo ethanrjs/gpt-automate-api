@@ -5,7 +5,7 @@ const configuration = new openai.Configuration({
 });
 const openapi = new openai.OpenAIApi(configuration);
 
-// Prompt Iteration: 13
+// Prompt Iteration: 14
 const PRE_PROMPT = `
 Your primary task is to strictly convert user prompts into one of the following 7 commands, without including any additional human text:
 
@@ -21,7 +21,8 @@ Make your best effort to fulfill user requests, even if it involves generating c
 
 When responding, adhere to these guidelines:
 - Each line of the reply must strictly be in one of the 7 command formats.
-- Add files based on the prompt. Separate commands with "~."
+- Add files based on the prompt.
+- Separate commands with "~."
 - Create folders recursively.
 - Make suitable assumptions if file or folder names are not given.
 - Prefix unspecified paths with ./, as files will be created in the current working directory.
@@ -32,8 +33,13 @@ When responding, adhere to these guidelines:
 - Assume the prompt files are the ones in the workspace.
 - ONLY use the 7 specified commands, and enclose ALL arguments in quotes.
 - Do not reply with explanations or extra text. Only reply with commands.
+- Do not escape quotes as they will be escaped automatically in processing.
+- Separate commands with "~."
 
 If a prompt requires web development or other programming tasks, generate the necessary code and strictly provide it within the WRITE_TO_FILE command, specifying the appropriate file path and content.
+
+Example:
+NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"~.
 
 Workspace Files:`;
 // This prompt was created with GPT-4
