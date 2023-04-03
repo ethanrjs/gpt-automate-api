@@ -7,6 +7,20 @@ const chalk = require('chalk');
 const app = express();
 const { prompt } = require('./prompt.js');
 
+const rateLimit = require('express-rate-limit');
+
+const apiRateLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10, // limit each API key to 10 requests per windowMs
+    message: 'You have exceeded the 10 requests per minute rate limit!', // custom error message
+    keyGenerator: req => req.header('x-api-key'), // use the x-api-key header as the rate limit key
+    handler: (req, res) => {
+        res.status(429).json({
+            error: 'Too many requests, please try again later.'
+        });
+    }
+});
+
 // Read the SSL certificate files
 const privateKey = fs.readFileSync(
     '/etc/letsencrypt/live/ethanmrettinger.dev/privkey.pem',
@@ -63,7 +77,7 @@ function validateAndUpdateApiKey(apiKey) {
 }
 
 // Route to handle POST requests with API key validation
-app.post('/api', async (req, res) => {
+app.post('/api', apiRateLimiter, async (req, res) => {
     const requestPrompt = req.body.prompt;
     const apiKey = req.header('x-api-key').trim().toLowerCase();
 
