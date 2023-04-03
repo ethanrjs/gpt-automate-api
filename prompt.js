@@ -60,8 +60,8 @@ async function prompt(json) {
     console.log(`Response: ${res}`);
 
     return {
-        response: res,
-        tokensUsed: tokensUsed
+        response: res || '',
+        tokensUsed: tokensUsed || 0
     };
 }
 
