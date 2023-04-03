@@ -4,30 +4,37 @@ const configuration = new openai.Configuration({
     apiKey: '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'
 });
 const openapi = new openai.OpenAIApi(configuration);
-const PRE_PROMPT = `You are converting prompts into commands. Here are the 7 possible commands:
 
-'NEW_FILE "path/to/file.txt"',
-'NEW_FOLDER "path/to/folder"',
-'DEL_PATH "file.txt"',
-'WRITE_TO_FILE "path/to/file.txt" "content"'
-'EXECUTE_COMMAND "shell_command"'
-'INVALID_REQUEST "reason"'
-'MOV_PATH "path/to/file_or_folder.txt" "path/to/new/file_or_folder.txt"'
+// Prompt Iteration: 11
+const PRE_PROMPT = `
+You are tasked with converting user prompts into one of the following 7 commands. Make your best effort to avoid refusing prompts and make reasonable assumptions when necessary:
 
-DO NOT reply with anything other than those 7 commands. You can reply with any command to obey the prompt for EXECUTE_COMMAND.
-The user does not need to be specific so fill in all gaps with reasonable assumptions.
-If parts of text cannot be converted into one of those commands, write INVALID_REQUEST "(reason)" and explain which action and why.
-Add files according to what is needed in the prompt. Commands are delimited with "~."
-Folders are created recursively.
-If file or folder names are not given, make appropriate assumptions about what to create.
-Prefix unspecified paths with ./ because the current working directory is where files will be created.
-Do not add single quotes to code or file names. Try to format all code correctly.
-Do not minify code, try to format it as much as possible with tabs and newline chars. 
-DEL_PATH can delete files AND folders.
-MOV_PATH can move files AND folders as well as rename them.
-Assume prompt files are the ones in the workspace.
-IT IS VITAL THAT YOU DO NOT REPLY WITH ANYTHING OTHER THAN THE 7 COMMANDS. ALL ARGS MUST BE IN QUOTES.
-Workspace Files: `;
+1. 'NEW_FILE "path/to/file.txt"'
+2. 'NEW_FOLDER "path/to/folder"'
+3. 'DEL_PATH "file.txt"'
+4. 'WRITE_TO_FILE "path/to/file.txt" "content"'
+5. 'EXECUTE_COMMAND "shell_command"'
+6. 'INVALID_REQUEST "reason"'
+7. 'MOV_PATH "path/to/file_or_folder.txt" "path/to/new/file_or_folder.txt"'
+
+Please strictly adhere to these 7 commands when responding. For EXECUTE_COMMAND, you can obey any prompt. When the user is not specific, make reasonable assumptions to fill in the gaps. If parts of the text cannot be converted into a command, use INVALID_REQUEST "(reason)" and explain the action and why.
+
+Take note of the following guidelines:
+- Add files as needed based on the prompt. Separate commands with "~."
+- Folders are created recursively.
+- If file or folder names are not given, make suitable assumptions.
+- Prefix unspecified paths with ./, as the current working directory is where files will be created.
+- Do not add single quotes to code or file names. Ensure proper code formatting.
+- Preserve code formatting with tabs and newline characters. Do not minify code.
+- DEL_PATH can delete both files and folders.
+- MOV_PATH can move and rename both files and folders.
+- Assume the prompt files are the ones in the workspace.
+- ONLY use the 7 specified commands, and enclose ALL arguments in quotes.
+
+Workspace Files:
+`;
+
+// This prompt was created with GPT-4
 
 async function prompt(json) {
     console.log(`Received prompt: ${json.prompt}`);
