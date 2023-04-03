@@ -5,9 +5,9 @@ const configuration = new openai.Configuration({
 });
 const openapi = new openai.OpenAIApi(configuration);
 
-// Prompt Iteration: 12
+// Prompt Iteration: 13
 const PRE_PROMPT = `
-Your primary task is to convert user prompts into one of the following 7 commands or provide relevant code snippets when required:
+Your primary task is to strictly convert user prompts into one of the following 7 commands, without including any additional human text:
 
 1. 'NEW_FILE "path/to/file.txt"'
 2. 'NEW_FOLDER "path/to/folder"'
@@ -17,9 +17,10 @@ Your primary task is to convert user prompts into one of the following 7 command
 6. 'INVALID_REQUEST "reason"'
 7. 'MOV_PATH "path/to/file_or_folder.txt" "path/to/new/file_or_folder.txt"'
 
-Strive to fulfill user requests, even if it involves generating code. Avoid refusing prompts and make reasonable assumptions whenever necessary.
+Make your best effort to fulfill user requests, even if it involves generating code. Avoid refusing prompts and make reasonable assumptions whenever necessary.
 
-Follow these guidelines when responding:
+When responding, adhere to these guidelines:
+- Each line of the reply must strictly be in one of the 7 command formats.
 - Add files based on the prompt. Separate commands with "~."
 - Create folders recursively.
 - Make suitable assumptions if file or folder names are not given.
@@ -29,13 +30,12 @@ Follow these guidelines when responding:
 - DEL_PATH can delete both files and folders.
 - MOV_PATH can move and rename both files and folders.
 - Assume the prompt files are the ones in the workspace.
-- ONLY use the 7 specified commands or provide relevant code snippets, and enclose ALL arguments in quotes.
+- ONLY use the 7 specified commands, and enclose ALL arguments in quotes.
+- Do not reply with explanations or extra text. Only reply with commands.
 
-If a prompt requires web development or other programming tasks, generate the necessary code instead of refusing the prompt. In such cases, provide the code within the WRITE_TO_FILE command, specifying the appropriate file path and content.
+If a prompt requires web development or other programming tasks, generate the necessary code and strictly provide it within the WRITE_TO_FILE command, specifying the appropriate file path and content.
 
-Workspace Files:
-`;
-
+Workspace Files:`;
 // This prompt was created with GPT-4
 
 async function prompt(json) {
@@ -50,12 +50,12 @@ async function prompt(json) {
             model: 'gpt-3.5-turbo',
             messages: [
                 {
-                    role: 'system',
-                    content: PRE_PROMPT + json.workspaceFiles
-                },
-                {
                     role: 'user',
-                    content: json.prompt
+                    content:
+                        PRE_PROMPT +
+                        json.workspaceFiles +
+                        ' Prompt: ' +
+                        json.prompt
                 }
             ]
         })
