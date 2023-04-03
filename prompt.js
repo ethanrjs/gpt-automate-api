@@ -32,6 +32,9 @@ Workspace Files: `;
 async function prompt(json) {
     console.log(`Received prompt: ${json.prompt}`);
     // Query
+    let wasSuccessful = false;
+    let errorMessage = '';
+
     let res = '';
     await openapi
         .createChatCompletion({
@@ -55,14 +58,22 @@ async function prompt(json) {
             error => {
                 console.log('\n\nERROR QUERYING OPENAI vvvvvvvvv\n\n');
                 console.error(error.response.data);
+                console.log('\n\nERROR QUERYING OPENAI ^^^^^^^^\n\n');
+                wasSuccessful = false;
+                errorMessage = error.response.data;
             }
         );
 
     console.log(`Response: ${res}`);
+    console.log(
+        `Tokens Used: ${tokensUsed} (Cost: $${(tokensUsed / 1000) * 0.002})`
+    );
 
     return {
-        response: res || '',
-        tokensUsed: tokensUsed || 0
+        err: wasSuccessful,
+        errMessage: errorMessage,
+        response: res,
+        tokensUsed: tokensUsed
     };
 }
 
