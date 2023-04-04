@@ -86,7 +86,7 @@ async function prompt(json) {
     );
 
     return {
-        err: wasSuccessful,
+        err: hasError,
         errMessage: errorMessage,
         response: res,
         tokensUsed: tokensUsed
