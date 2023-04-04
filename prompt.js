@@ -47,7 +47,7 @@ Workspace Files:`;
 async function prompt(json) {
     console.log(`Received prompt: ${json.prompt}`);
     // Query
-    let wasSuccessful = false;
+    let hasError = false;
     let errorMessage = '';
 
     let res = '';
@@ -74,7 +74,7 @@ async function prompt(json) {
                 console.log('\n\nERROR QUERYING OPENAI vvvvvvvvv\n\n');
                 console.error(error.response.data);
                 console.log('\n\nERROR QUERYING OPENAI ^^^^^^^^\n\n');
-                wasSuccessful = false;
+                hasError = true;
                 errorMessage = error.response.data;
             }
         );
