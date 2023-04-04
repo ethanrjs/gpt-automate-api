@@ -49,6 +49,7 @@ async function prompt(json) {
     // Query
     let hasError = false;
     let errorMessage = '';
+    let tokensUsed = 0;
 
     let res = '';
     await openapi
