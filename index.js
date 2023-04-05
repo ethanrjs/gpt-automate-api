@@ -102,7 +102,11 @@ app.post('/api', apiRateLimiter, async (req, res) => {
         apiKeyEntry.tokensGiven += response.tokensUsed;
         writeApiKeys(apiKeys);
 
-        res.json(response.response);
+        if (response.err) {
+            res.json(response);
+        } else {
+            res.json(response.response);
+        }
     } else {
         console.log('Invalid request');
         console.log('prompt: "', chalk.green(requestPrompt)) + '"';
