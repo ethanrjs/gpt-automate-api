@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const chalk = require('chalk');
 const app = express();
 const { prompt } = require('./prompt.js');
+const chalk = require('chalk');
 
 const rateLimit = require('express-rate-limit');
 
@@ -86,8 +87,8 @@ app.post('/api', apiRateLimiter, async (req, res) => {
 
     if (promptIsValid && keyIsValid) {
         const isValid = validateAndUpdateApiKey(apiKey);
-        console.log(`API key valid: ${isValid}`);
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
+        console.log(chalk.bgGreen.white.bold(' VALID API KEY! '));
 
         let response = await prompt(req.body);
         // add response.tokensUsed to the apiKeys.json file
@@ -108,11 +109,7 @@ app.post('/api', apiRateLimiter, async (req, res) => {
             res.json(response.response);
         }
     } else {
-        console.log('Invalid request');
-        console.log('prompt: "', chalk.green(requestPrompt)) + '"';
-        console.log('apiKey: "', chalk.blue(apiKey) + '"');
-        console.log('req.body:', chalk.red(JSON.stringify(req.body, null, 2)));
-
+        console.log(chalk.bgRed.white.bold(' INVALID REQUEST! '));
         res.status(400).json({ error: 'Invalid request' });
     }
 });
@@ -127,5 +124,5 @@ const httpsServer = https.createServer(credentials, app);
 
 // Start the server on port 443
 httpsServer.listen(443, () => {
-    console.log('HTTPS server running on port 443');
+    console.log(chalk.bgBlue.white.bold(' SERVER ONLINE 🚀 '));
 });

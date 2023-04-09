@@ -4,6 +4,7 @@ const configuration = new openai.Configuration({
     apiKey: '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'
 });
 const openapi = new openai.OpenAIApi(configuration);
+const chalk = require('chalk');
 
 // Prompt Iteration: 14
 const PRE_PROMPT = `
@@ -45,7 +46,7 @@ Workspace Files:`;
 // This prompt was created with GPT-4
 
 async function prompt(json) {
-    console.log(`Received prompt: ${json.prompt}`);
+    console.log(chalk.bgBlue.white.bold(' PROMPT '), json.prompt);
     // Query
     let hasError = false;
     let errorMessage = '';
@@ -72,19 +73,22 @@ async function prompt(json) {
                 tokensUsed = data.data.usage.total_tokens;
             },
             error => {
-                console.log('\n\nERROR QUERYING OPENAI vvvvvvvvv\n\n');
+                console.log(
+                    chalk.red('\n\nERROR QUERYING OPENAI vvvvvvvvv\n\n')
+                );
                 console.error(error.response.data);
-                console.log('\n\nERROR QUERYING OPENAI ^^^^^^^^\n\n');
+                console.log(
+                    chalk.red('\n\nERROR QUERYING OPENAI ^^^^^^^^^\n\n')
+                );
                 hasError = true;
                 errorMessage = error.response.data;
             }
         );
 
     console.log(`Response: ${res}`);
-    console.log(
-        `Tokens Used: ${tokensUsed} (Cost: $${(tokensUsed / 1000) * 0.002})`
-    );
-
+    let price = (tokensUsed / 1000) * 0.002;
+    console.log(chalk.bgYellow.black.bold(' TOKENS USED '), tokensUsed);
+    console.log(chalk.bgGreen.black.bold(' PRICE '), price);
     return {
         err: hasError,
         errMessage: errorMessage,
