@@ -1,10 +1,11 @@
 {
     "name": "gpt-automate-api",
-    "version": "1.0.0",
+    "version": "1.0.12",
     "description": "",
     "main": "index.js",
     "scripts": {
-        "genkey": "node ./generate-api-key.js"
+        "generate-key": "node ./src/generate-api-key.js",
+        "generate-premium-key": "node ./src/generate-api-key.js premium"
     },
     "keywords": [],
     "author": "",
