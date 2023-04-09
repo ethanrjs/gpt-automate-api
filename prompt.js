@@ -46,7 +46,7 @@ Workspace Files:`;
 // This prompt was created with GPT-4
 
 async function prompt(json) {
-    console.log(chalk.bgBlue.white.bold(' PROMPT '), json.prompt);
+    console.log(chalk.bgBlue.white.bold(' PROMPT '), chalk.blue(json.prompt));
     // Query
     let hasError = false;
     let errorMessage = '';
@@ -85,10 +85,13 @@ async function prompt(json) {
             }
         );
 
-    console.log(`Response: ${res}`);
+    console.log(chalk.bgRed.black.bold(' RESPONSE '), res);
     let price = (tokensUsed / 1000) * 0.002;
-    console.log(chalk.bgYellow.black.bold(' TOKENS USED '), tokensUsed);
-    console.log(chalk.bgGreen.black.bold(' PRICE '), price);
+    console.log(
+        chalk.bgYellow.black.bold(' TOKENS USED '),
+        chalk.yellow(tokensUsed)
+    );
+    console.log(chalk.bgGreen.black.bold(' PRICE '), chalk.green('$' + price));
     return {
         err: hasError,
         errMessage: errorMessage,
