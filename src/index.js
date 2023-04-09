@@ -87,7 +87,7 @@ app.post('/api', apiRateLimiter, async (req, res) => {
     if (promptIsValid && keyIsValid) {
         const isValid = validateAndUpdateApiKey(apiKey);
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
-        console.log(chalk.bgGreen.white.bold(' VALID API KEY! '));
+        console.log(chalk.bgGreen.white.bold('\n\n VALID API KEY! '));
 
         let response = await prompt(req.body);
         // add response.tokensUsed to the apiKeys.json file
