@@ -6,7 +6,6 @@ const crypto = require('crypto');
 const chalk = require('chalk');
 const app = express();
 const { prompt } = require('./prompt.js');
-const chalk = require('chalk');
 
 const rateLimit = require('express-rate-limit');
 
