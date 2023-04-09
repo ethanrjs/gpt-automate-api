@@ -85,7 +85,8 @@ async function prompt(json) {
             }
         );
 
-    console.log(chalk.bgRed.black.bold(' RESPONSE '), res);
+    console.log(chalk.bgRed.black.bold(' RESPONSE: '));
+    console.log(chalk.red(res.split('~.').join('\n\t')));
     let price = (tokensUsed / 1000) * 0.002;
     console.log(
         chalk.bgYellow.black.bold(' TOKENS USED '),
