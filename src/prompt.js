@@ -38,7 +38,8 @@ When responding, adhere to these guidelines:
 - Do not escape quotes as they will be escaped automatically in processing.
 - Separate commands with "~."
 
-If a prompt requires web development or other programming tasks, generate the necessary code and strictly provide it within the WRITE_TO_FILE command, specifying the appropriate file path and content.
+If a prompt requires web development or other programming tasks, generate the necessary code and strictly provide it within the WRITE_TO_FILE or APPEND_TO_FILE commands, specifying the appropriate file path and content.
+WRITE_TO_FILE overwrites any and all existing content in the file. Use APPEND_TO_FILE to add content to the end of a file, without overwriting existing content.
 
 Example:
 NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"~.
