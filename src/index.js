@@ -89,7 +89,13 @@ app.post('/api', apiRateLimiter, async (req, res) => {
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
         console.log(chalk.bgGreen.white.bold('\n\n VALID API KEY! '));
 
-        let response = await prompt(req.body);
+        // if req.body.rfc is true, add "File Content: " + req.body.rfcContent to the prompt in a new message
+
+        if (req.body.rfc) {
+            rfcMessage = '\n\nFile Content: ' + req.body.rfcContent;
+        }
+
+        let response = await prompt(req.body, req.body.rfc ? rfcMessage : '');
         // add response.tokensUsed to the apiKeys.json file
         const apiKeys = readApiKeys();
         const encryptedApiKey = crypto

@@ -44,13 +44,16 @@ WRITE_TO_FILE overwrites any and all existing content in the file. Use APPEND_TO
 If you are told to create something, try to create it. Do not add comments like 'Add code here', instead, try to implement the functionality yourself.
 It is important that you try to follow the commands. You may not be correct, but that is okay. Just try your best.
 
+If a prompt requires you to read the contents of a file, i.e. asking a user to debug a file, you MUST reply with this, replace path/to/file with the path of the file you need to read:
+RFC "path/to/file"
+
 Example Response:
 NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"
 
 Workspace Files:`;
 // This prompt was created with GPT-4
 
-async function prompt(json) {
+async function prompt(json, rfcMessage) {
     console.log(chalk.bgBlue.white.bold(' PROMPT '), chalk.blue(json.prompt));
     // Query
     let hasError = false;
@@ -69,7 +72,8 @@ async function prompt(json) {
                         json.workspaceFiles +
                         ' Prompt: ' +
                         json.prompt
-                }
+                },
+                rfcMessage ? { role: 'user', content: rfcMessage } : {}
             ]
         })
         .then(
@@ -124,6 +128,14 @@ async function prompt(json) {
         ampm;
 
     console.log(chalk.bgMagenta.black.bold(' TIME '), chalk.magenta(strTime));
+
+    // if response starts with 'RFC', log it
+    if (res.trim().startsWith('RFC')) {
+        console.log(
+            chalk.bgRed.black.bold(' CONTENT RFC '),
+            chalk.red(res.split('"')[1])
+        );
+    }
 
     return {
         err: hasError,
