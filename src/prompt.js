@@ -61,20 +61,30 @@ async function prompt(json, rfcMessage) {
     let tokensUsed = 0;
 
     let res = '';
+    let messages = [];
+    if (rfcMessage !== '') {
+        messages = [
+            {
+                role: 'user',
+                content:
+                    PRE_PROMPT + json.workspaceFiles + ' Prompt: ' + json.prompt
+            },
+            { role: 'user', content: rfcMessage }
+        ];
+    } else {
+        messages = [
+            {
+                role: 'user',
+                content:
+                    PRE_PROMPT + json.workspaceFiles + ' Prompt: ' + json.prompt
+            }
+        ];
+    }
+
     await openapi
         .createChatCompletion({
             model: 'gpt-3.5-turbo',
-            messages: [
-                {
-                    role: 'user',
-                    content:
-                        PRE_PROMPT +
-                        json.workspaceFiles +
-                        ' Prompt: ' +
-                        json.prompt
-                },
-                rfcMessage ? { role: 'user', content: rfcMessage } : {}
-            ]
+            messages: messages
         })
         .then(
             data => {
