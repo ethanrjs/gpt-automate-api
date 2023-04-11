@@ -48,6 +48,10 @@ RFC Example:
 Prompt: 'Echo the secret message hidden in the file'
 Response: 'RFC "./secret.txt"'
 
+Prompt Message 1: " Echo the secret message hidden in the file "
+Prompt Message 2: "File Contents: 'The secret message is: ' + secret + '.'"
+Response: "EXECUTE_COMMAND 'echo The secret message is: ' + secret + '.'"
+
 The api will handle the rest.
 
 If you are told to create something, try to create it. Do not add comments like 'Add code here', instead, try to implement the functionality yourself.
