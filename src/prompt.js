@@ -146,6 +146,13 @@ async function prompt(json, rfcMessage) {
             chalk.bgRed.black.bold(' CONTENT RFC '),
             chalk.red(res.split('"')[1])
         );
+
+        // log the first 100 characters of the file and ...
+        let rfcContent = rfcMessage.substring(0, 100);
+        console.log(
+            chalk.bgGreen.black.bold(' RFC RECEIVED '),
+            chalk.green(rfcContent + '...')
+        );
     }
 
     return {
