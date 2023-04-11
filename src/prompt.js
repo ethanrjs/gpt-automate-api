@@ -149,6 +149,9 @@ async function prompt(json, rfcMessage) {
         );
 
         // log the first 100 characters of the file and ...
+    }
+
+    if (rfcMessage !== '') {
         let rfcContent = rfcMessage.substring(0, 100);
         console.log(
             chalk.bgGreen.black.bold(' RFC RECEIVED '),
