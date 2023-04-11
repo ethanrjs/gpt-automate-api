@@ -46,8 +46,8 @@ It is important that you try to follow the commands. You may not be correct, but
 
 If a prompt requires you to read the contents of a file, i.e. asking a user to debug a file, you MUST reply with this, replace path/to/file with the path of the file you need to read:
 RFC "path/to/file"
-If you write RFC, that must be the only thing you write. You may not write any other commands.
 
+Do not follow with any other commands.
 Example Response:
 NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"
 
