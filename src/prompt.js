@@ -75,7 +75,7 @@ async function prompt(json, rfcMessage) {
                 content:
                     PRE_PROMPT + json.workspaceFiles + ' Prompt: ' + json.prompt
             },
-            { role: 'user', content: rfcMessage }
+            { role: 'user', content: 'File Content Requested: ' + rfcMessage }
         ];
     } else {
         messages = [
