@@ -203,6 +203,8 @@ async function prompt(json, rfcMessage) {
         chalk.blue(optimizedData.rfcContentTokens)
     );
 
+    console.log(JSON.stringify(optimizedData, null, 2));
+
     return {
         err: hasError,
         errMessage: errorMessage,
