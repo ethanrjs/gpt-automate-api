@@ -195,7 +195,7 @@ async function prompt(json, rfcMessage) {
     // workspace files tokens
     console.log(
         '├────────' + chalk.bgGreen.white.bold(' WORKSPACE FILES TOKENS '),
-        chalk.blue(optimizedDat.tokenCounts.workspaceFilesTokens)
+        chalk.blue(optimizedData.tokenCounts.workspaceFilesTokens)
     );
     // rfc message tokens
     console.log(
