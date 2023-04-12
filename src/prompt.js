@@ -82,7 +82,7 @@ async function prompt(json, rfcMessage) {
         rfcMessage
     );
 
-    json.prompt = optimizedData.prompt;
+    json.prompt = optimizedData.userPrompt;
     rfcMessage = optimizedData.rfcContent;
     json.workspaceFiles = optimizedData.workspaceFiles;
 
@@ -179,31 +179,32 @@ async function prompt(json, rfcMessage) {
 
     // log token counts with different colors
     console.log(
+        '\n',
         chalk.bgWhite.black.bold(' TOKENS USED '),
         chalk.blue(tokensUsed)
     );
     // pre prompt tokens
     console.log(
-        '\t',
-        chalk.bgRed.black.bold(' PRE-PROMPT TOKENS '),
+        '├────────',
+        chalk.bgRed.white.bold(' PRE-PROMPT TOKENS '),
         chalk.blue(optimizedData.prePromptTokens)
     );
     // prompt tokens
     console.log(
-        '\t',
-        chalk.bgYellow.black.bold(' PROMPT TOKENS '),
+        '├────────',
+        chalk.bgYellow.white.bold(' PROMPT TOKENS '),
         chalk.blue(optimizedData.promptTokens)
     );
     // workspace files tokens
     console.log(
-        '\t',
-        chalk.bgGreen.black.bold(' WORKSPACE FILES TOKENS '),
+        '└────────',
+        chalk.bgGreen.white.bold(' WORKSPACE FILES TOKENS '),
         chalk.blue(optimizedData.workspaceFilesTokens)
     );
     // rfc message tokens
     console.log(
         '\t',
-        chalk.bgBlue.black.bold(' RFC MESSAGE TOKENS '),
+        chalk.bgBlue.white.bold(' RFC MESSAGE TOKENS '),
         chalk.blue(optimizedData.rfcMessageTokens)
     );
 
