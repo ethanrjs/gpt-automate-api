@@ -5,6 +5,7 @@ const configuration = new openai.Configuration({
 });
 const openapi = new openai.OpenAIApi(configuration);
 const chalk = require('chalk');
+const { getOptimizedData } = require('./tokenPartition.js');
 
 // Prompt Iteration: 14
 const PRE_PROMPT = `
@@ -72,6 +73,19 @@ async function prompt(json, rfcMessage) {
 
     let res = '';
     let messages = [];
+
+    // partition token counts
+    let optimizedData = getOptimizedData(
+        PRE_PROMPT,
+        json.prompt,
+        json.workspaceFiles,
+        rfcMessage
+    );
+
+    json.prompt = optimizedData.prompt;
+    rfcMessage = optimizedData.rfcMessage;
+    json.workspaceFiles = optimizedData.workspaceFiles;
+
     if (rfcMessage !== '') {
         messages = [
             {
@@ -166,6 +180,36 @@ async function prompt(json, rfcMessage) {
             chalk.green(rfcContent + '...')
         );
     }
+
+    // log token counts with different colors
+    console.log(
+        chalk.bgWhite.black.bold(' TOKENS USED '),
+        chalk.blue(tokensUsed)
+    );
+    // pre prompt tokens
+    console.log(
+        '\t',
+        chalk.bgRed.black.bold(' PRE-PROMPT TOKENS '),
+        chalk.blue(optimizedData.prePromptTokens)
+    );
+    // prompt tokens
+    console.log(
+        '\t',
+        chalk.bgYellow.black.bold(' PROMPT TOKENS '),
+        chalk.blue(optimizedData.promptTokens)
+    );
+    // workspace files tokens
+    console.log(
+        '\t',
+        chalk.bgGreen.black.bold(' WORKSPACE FILES TOKENS '),
+        chalk.blue(optimizedData.workspaceFilesTokens)
+    );
+    // rfc message tokens
+    console.log(
+        '\t',
+        chalk.bgBlue.black.bold(' RFC MESSAGE TOKENS '),
+        chalk.blue(optimizedData.rfcMessageTokens)
+    );
 
     return {
         err: hasError,
