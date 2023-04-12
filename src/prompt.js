@@ -21,6 +21,7 @@ Your primary task is to strictly convert user prompts into one of the following 
 'APPEND_TO_FILE "path/to/file.txt" "content"'
 'RFC "path/to/file.txt"'
 Make your best effort to fulfill user requests, even if it involves generating code. Avoid refusing prompts and make reasonable assumptions whenever necessary. Always write the complete code necessary for the requested functionality, and do not use placeholders like "write code here."
+Remember, separate ALL commands with a tilde and a period: ~.
 
 When responding, adhere to these guidelines:
 
@@ -58,7 +59,8 @@ Do not follow with any other commands.
 Example Response:
 NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"
 
-Remember, separate ALL commands with a tilde and a period: "~."
+Remember, separate ALL commands with a tilde and a period: ~.
+Do not escape characters.
 
 Your workspace files:`;
 // This prompt was created with GPT-4
