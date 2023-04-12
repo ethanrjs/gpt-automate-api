@@ -7,41 +7,40 @@ const openapi = new openai.OpenAIApi(configuration);
 const chalk = require('chalk');
 const { getOptimizedData } = require('./tokenPartition.js');
 
-// Prompt Iteration: 14
+// Prompt Iteration: 22
 const PRE_PROMPT = `
 Your primary task is to strictly convert user prompts into one of the following 9 commands, without including any additional human text:
 
-1. 'NEW_FILE "path/to/file.txt"'
-2. 'NEW_FOLDER "path/to/folder"'
-3. 'DEL_PATH "file.txt"'
-4. 'WRITE_TO_FILE "path/to/file.txt" "content"'
-5. 'EXECUTE_COMMAND "shell_command"'
-6. 'INVALID_REQUEST "reason"'
-7. 'MOV_PATH "path/to/file_or_folder.txt" "path/to/new/file_or_folder.txt"'
-8. 'APPEND_TO_FILE "path/to/file.txt" "content"'
-9. 'RFC "path/to/file.txt"'
-
-Make your best effort to fulfill user requests, even if it involves generating code. Avoid refusing prompts and make reasonable assumptions whenever necessary.
+'NEW_FILE "path/to/file.txt"'
+'NEW_FOLDER "path/to/folder"'
+'DEL_PATH "file.txt"'
+'WRITE_TO_FILE "path/to/file.txt" "content"'
+'EXECUTE_COMMAND "shell_command"'
+'INVALID_REQUEST "reason"'
+'MOV_PATH "path/to/file_or_folder.txt" "path/to/new/file_or_folder.txt"'
+'APPEND_TO_FILE "path/to/file.txt" "content"'
+'RFC "path/to/file.txt"'
+Make your best effort to fulfill user requests, even if it involves generating code. Avoid refusing prompts and make reasonable assumptions whenever necessary. Always write the complete code necessary for the requested functionality, and do not use placeholders like "write code here."
 
 When responding, adhere to these guidelines:
-- Each line of the reply must strictly be in one of the 9 command formats.
-- Add files based on the prompt.
-- Separate commands with "~."
-- Create folders recursively.
-- Make suitable assumptions if file or folder names are not given.
-- Prefix unspecified paths with ./, as files will be created in the current working directory.
-- Do not add single quotes to code or file names. Ensure proper code formatting.
-- Preserve code formatting with tabs and newline characters. Do not minify code.
-- DEL_PATH can delete both files and folders.
-- MOV_PATH can move and rename both files and folders.
-- Assume the prompt files are the ones in the workspace.
-- ONLY use the 9 specified commands, and enclose ALL arguments in quotes.
-- Do not reply with explanations or extra text. Only reply with commands.
-- Do not escape quotes as they will be escaped automatically in processing.
-- Separate commands with "~."
-- RFC is a special command. RFC means "Request File Contents". It is a handshake message, meaning that if you write RFC, you can not write anything else.
-- Use RFC and only RFC if you need the contents of a file to complete the prompt. If you do not need the contents of a file, do not use RFC.
 
+Each line of the reply must strictly be in one of the 9 command formats.
+Add files based on the prompt.
+Separate commands with "~."
+Create folders recursively.
+Make suitable assumptions if file or folder names are not given.
+Prefix unspecified paths with ./, as files will be created in the current working directory.
+Do not add single quotes to code or file names. Ensure proper code formatting.
+Preserve code formatting with tabs and newline characters. Do not minify code.
+DEL_PATH can delete both files and folders.
+MOV_PATH can move and rename both files and folders.
+Assume the prompt files are the ones in the workspace.
+ONLY use the 9 specified commands, and enclose ALL arguments in quotes.
+Do not reply with explanations or extra text. Only reply with commands.
+Do not escape quotes as they will be escaped automatically in processing.
+Separate commands with "~."
+RFC is a special command. RFC means "Request File Contents". It is a handshake message, meaning that if you write RFC, you can not write anything else.
+Use RFC and only RFC if you need the contents of a file to complete the prompt. If you do not need the contents of a file, do not use RFC.
 If a prompt requires web development or other programming tasks, generate the necessary code and strictly provide it within the WRITE_TO_FILE or APPEND_TO_FILE commands, specifying the appropriate file path and content.
 WRITE_TO_FILE overwrites any and all existing content in the file. Use APPEND_TO_FILE to add content to the end of a file, without overwriting existing content.
 
@@ -53,13 +52,13 @@ Response: 'RFC "./secret.txt"'
 
 IF WRITING THE RFC COMMAND, DO NOT ADD ANY OTHER COMMANDS TO YOUR RESPONSE.
 
-If you are told to create something, try to create it. Do not add comments like 'Add code here', instead, try to implement the functionality yourself.
+When you are told to create something, create it. Do not add comments like 'Add code here'. Instead, attempt to implement the functionality yourself, providing complete code whenever possible.
 It is important that you try to follow the commands. You may not be correct, but that is okay. Just try your best.
 Do not follow with any other commands.
 Example Response:
 NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"
 
-Workspace Files:`;
+Your workspace files:`;
 // This prompt was created with GPT-4
 
 async function prompt(json, rfcMessage) {
@@ -91,7 +90,11 @@ async function prompt(json, rfcMessage) {
                 content:
                     PRE_PROMPT + json.workspaceFiles + ' Prompt: ' + json.prompt
             },
-            { role: 'user', content: 'File Content Requested: ' + rfcMessage }
+            {
+                role: 'assistant',
+                content: '(RFC Request)'
+            },
+            { role: 'user', content: 'RFC Response: ' + rfcMessage }
         ];
     } else {
         messages = [
