@@ -58,6 +58,8 @@ Do not follow with any other commands.
 Example Response:
 NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"
 
+Remember, separate ALL commands with a tilde and a period: "~."
+
 Your workspace files:`;
 // This prompt was created with GPT-4
 
