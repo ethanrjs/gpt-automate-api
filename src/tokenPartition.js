@@ -69,8 +69,6 @@ function getOptimizedData(
             enc.encode(workspaceFiles).slice(0, workspaceFilesAvailableTokens)
         );
     }
-
-    // Return the optimized data
     return {
         basePrompt,
         userPrompt,
