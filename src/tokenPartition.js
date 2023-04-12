@@ -75,7 +75,12 @@ function getOptimizedData(
         basePrompt,
         userPrompt,
         workspaceFiles,
-        rfcContent
+        rfcContent,
+
+        basePromptTokens,
+        userPromptTokens,
+        workspaceFilesTokens,
+        rfcContentTokens
     };
 }
 

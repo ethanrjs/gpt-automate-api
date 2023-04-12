@@ -83,7 +83,7 @@ async function prompt(json, rfcMessage) {
     );
 
     json.prompt = optimizedData.prompt;
-    rfcMessage = optimizedData.rfcMessage;
+    rfcMessage = optimizedData.rfcContent;
     json.workspaceFiles = optimizedData.workspaceFiles;
 
     if (rfcMessage !== '') {
@@ -169,7 +169,7 @@ async function prompt(json, rfcMessage) {
         // log the first 100 characters of the file and ...
     }
 
-    if (rfcMessage != '') {
+    if (rfcMessage) {
         let rfcContent = rfcMessage.substring(0, 100);
         console.log(
             chalk.bgGreen.black.bold(' RFC RECEIVED '),
