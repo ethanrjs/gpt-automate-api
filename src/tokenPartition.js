@@ -69,16 +69,20 @@ function getOptimizedData(
             enc.encode(workspaceFiles).slice(0, workspaceFilesAvailableTokens)
         );
     }
+
+    enc.free();
+
     return {
         basePrompt,
         userPrompt,
         workspaceFiles,
         rfcContent,
-
-        basePromptTokens,
-        userPromptTokens,
-        workspaceFilesTokens,
-        rfcContentTokens
+        tokenCounts: {
+            basePromptTokens,
+            userPromptTokens,
+            workspaceFilesTokens,
+            rfcContentTokens
+        }
     };
 }
 

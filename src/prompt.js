@@ -185,25 +185,25 @@ async function prompt(json, rfcMessage) {
     // pre prompt tokens
     console.log(
         '├────────' + chalk.bgRed.white.bold(' PRE-PROMPT TOKENS '),
-        chalk.blue(optimizedData.basePromptTokens)
+        chalk.blue(optimizedData.tokenCounts.basePromptTokens)
     );
     // prompt tokens
     console.log(
         '├────────' + chalk.bgYellow.white.bold(' PROMPT TOKENS '),
-        chalk.blue(optimizedData.userPromptTokens)
+        chalk.blue(optimizedData.tokenCounts.userPromptTokens)
     );
     // workspace files tokens
     console.log(
         '├────────' + chalk.bgGreen.white.bold(' WORKSPACE FILES TOKENS '),
-        chalk.blue(optimizedData.workspaceFilesTokens)
+        chalk.blue(optimizedDat.tokenCounts.workspaceFilesTokens)
     );
     // rfc message tokens
     console.log(
         '└────────' + chalk.bgBlue.white.bold(' RFC MESSAGE TOKENS '),
-        chalk.blue(optimizedData.rfcContentTokens)
+        chalk.blue(optimizedData.tokenCounts.rfcContentTokens)
     );
 
-    console.log(JSON.stringify(optimizedData, null, 2));
+    console.log(JSON.stringify(optimizedData.tokenCounts, null, 2));
 
     return {
         err: hasError,
