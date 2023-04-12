@@ -129,7 +129,9 @@ async function prompt(json, rfcMessage) {
         );
 
     console.log(chalk.bgRed.white.bold(' RESPONSE: '));
-    console.log('\t' + chalk.red(res.split('~.').join('\n\t')));
+    console.log(
+        '\t' + chalk.red(res.substring(0, 250).split('~.').join('\n├────────'))
+    );
     let price = (tokensUsed / 1000) * 0.002;
     console.log(chalk.bgGreen.black.bold(' PRICE '), chalk.green('$' + price));
     // log time in dd-mm-yyyy hh:mm:ss am/pm format
@@ -202,8 +204,6 @@ async function prompt(json, rfcMessage) {
         '└────────' + chalk.bgBlue.white.bold(' RFC MESSAGE TOKENS '),
         chalk.blue(optimizedData.tokenCounts.rfcContentTokens)
     );
-
-    console.log(JSON.stringify(optimizedData.tokenCounts, null, 2));
 
     return {
         err: hasError,
