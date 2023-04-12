@@ -91,7 +91,9 @@ app.post('/api', apiRateLimiter, async (req, res) => {
 
         let response = await prompt(req.body, req.body.rfcContent || '');
 
-        console.log(chalk.bgGreen.black.bold(' RFC REPLY? ' + req.body.rfc));
+        console.log(
+            chalk.bgGreen.white.bold(' RFC REPLY? ') + req.body.rfc || 'false'
+        );
 
         // add response.tokensUsed to the apiKeys.json file
         const apiKeys = readApiKeys();

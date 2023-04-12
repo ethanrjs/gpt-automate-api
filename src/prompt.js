@@ -130,11 +130,12 @@ async function prompt(json, rfcMessage) {
 
     console.log(chalk.bgRed.white.bold(' RESPONSE: '));
     console.log(
-        '├──────── ' +
-            chalk.red(res.substring(0, 250).split('~.').join('\n├──────── '))
+        chalk.red('├──────── ') +
+            chalk.red(res.substring(0, 250).split('~.').join('\n├──────── ')) +
+            '\n'
     );
-    let price = (tokensUsed / 1000) * 0.002;
-    console.log(chalk.bgGreen.black.bold(' PRICE '), chalk.green('$' + price));
+    let price = ((tokensUsed / 1000) * 0.002).toFixed(4);
+    console.log(chalk.bgGreen.white.bold(' PRICE '), chalk.green('$' + price));
     // log time in dd-mm-yyyy hh:mm:ss am/pm format
     let date = new Date();
     let hours = date.getHours();
@@ -160,12 +161,12 @@ async function prompt(json, rfcMessage) {
         ' ' +
         ampm;
 
-    console.log(chalk.bgMagenta.black.bold(' TIME '), chalk.magenta(strTime));
+    console.log(chalk.bgMagenta.white.bold(' TIME '), chalk.magenta(strTime));
 
     // if response starts with 'RFC', log it
     if (res.trim().startsWith('RFC')) {
         console.log(
-            chalk.bgRed.black.bold(' CONTENT RFC '),
+            chalk.bgRed.white.bold(' CONTENT RFC '),
             chalk.red(res.split('"')[1])
         );
 
@@ -182,36 +183,39 @@ async function prompt(json, rfcMessage) {
 
     // log token counts with different colors
     console.log(
-        '\n' + chalk.bgWhite.black.bold(' TOKENS USED '),
-        chalk.blue(tokensUsed)
+        '\n' +
+            chalk.bgWhite.black.bold(' TOKENS USED ') +
+            ' \t\t\t' +
+            chalk.white(tokensUsed)
     );
     // pre prompt tokens
     console.log(
         '├────────' +
-            chalk.bgRed.white.bold(' PRE-PROMPT TOKENS ') +
-            ' \t' +
-            chalk.blue(optimizedData.tokenCounts.basePromptTokens)
+            chalk.bgRed.bold(' PRE-PROMPT TOKENS ') +
+            ' \t\t' +
+            chalk.red(optimizedData.tokenCounts.basePromptTokens)
     );
     // prompt tokens
     console.log(
         '├────────' +
-            chalk.bgYellow.white.bold(' PROMPT TOKENS ') +
-            ' \t' +
-            chalk.blue(optimizedData.tokenCounts.userPromptTokens)
+            chalk.bgYellow.bold(' PROMPT TOKENS ') +
+            ' \t\t' +
+            chalk.yellow(optimizedData.tokenCounts.userPromptTokens)
     );
     // workspace files tokens
     console.log(
         '├────────' +
-            chalk.bgGreen.white.bold(' WORKSPACE FILES TOKENS ') +
+            chalk.bgGreen.bold(' WORKSPACE FILES TOKENS ') +
             ' \t' +
-            chalk.blue(optimizedData.tokenCounts.workspaceFilesTokens)
+            chalk.green(optimizedData.tokenCounts.workspaceFilesTokens)
     );
     // rfc message tokens
     console.log(
         '└────────' +
-            chalk.bgBlue.white.bold(' RFC MESSAGE TOKENS ') +
-            ' \t' +
-            chalk.blue(optimizedData.tokenCounts.rfcContentTokens)
+            chalk.blue.bold(' RFC MESSAGE TOKENS ') +
+            ' \t\t' +
+            chalk.blue(optimizedData.tokenCounts.rfcContentTokens) +
+            '\n'
     );
 
     return {
