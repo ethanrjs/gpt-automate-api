@@ -128,13 +128,9 @@ async function prompt(json, rfcMessage) {
             }
         );
 
-    console.log(chalk.bgRed.black.bold(' RESPONSE: '));
-    console.log(chalk.red(res.split('~.').join('\n\t')));
+    console.log(chalk.bgRed.white.bold(' RESPONSE: '));
+    console.log('\t' + chalk.red(res.split('~.').join('\n\t')));
     let price = (tokensUsed / 1000) * 0.002;
-    console.log(
-        chalk.bgYellow.black.bold(' TOKENS USED '),
-        chalk.yellow(tokensUsed)
-    );
     console.log(chalk.bgGreen.black.bold(' PRICE '), chalk.green('$' + price));
     // log time in dd-mm-yyyy hh:mm:ss am/pm format
     let date = new Date();
@@ -173,7 +169,7 @@ async function prompt(json, rfcMessage) {
         // log the first 100 characters of the file and ...
     }
 
-    if (rfcMessage !== '') {
+    if (rfcMessage != '') {
         let rfcContent = rfcMessage.substring(0, 100);
         console.log(
             chalk.bgGreen.black.bold(' RFC RECEIVED '),
