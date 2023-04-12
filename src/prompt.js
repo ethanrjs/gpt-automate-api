@@ -185,7 +185,7 @@ async function prompt(json, rfcMessage) {
     console.log(
         '\n' +
             chalk.bgWhite.black.bold(' TOKENS USED ') +
-            ' \t\t\t' +
+            ' \t\t\t\t' +
             chalk.white(tokensUsed)
     );
     // pre prompt tokens
@@ -212,7 +212,7 @@ async function prompt(json, rfcMessage) {
     // rfc message tokens
     console.log(
         '└────────' +
-            chalk.blue.bold(' RFC MESSAGE TOKENS ') +
+            chalk.bgBlue.white.bold(' RFC MESSAGE TOKENS ') +
             ' \t\t' +
             chalk.blue(optimizedData.tokenCounts.rfcContentTokens) +
             '\n'
