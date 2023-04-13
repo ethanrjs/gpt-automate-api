@@ -87,7 +87,7 @@ app.post('/api', apiRateLimiter, async (req, res) => {
     if (promptIsValid && keyIsValid) {
         const isValid = validateAndUpdateApiKey(apiKey);
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
-        console.log(chalk.bgGreen.white.bold('<<< NEW PROMPT >>>'));
+        console.log(chalk.bgGreen.white.bold('\n\n\n<<< NEW PROMPT >>>'));
 
         let response = await prompt(req.body, req.body.rfcContent || '');
 
@@ -108,6 +108,9 @@ app.post('/api', apiRateLimiter, async (req, res) => {
         apiKeyEntry.tokensGiven += response.tokensUsed;
         writeApiKeys(apiKeys);
 
+        // append text to logs/MM-DD-YYYY.log
+        await logRequest(req.body, response);
+
         if (response.err) {
             res.json(response);
         } else {
@@ -119,6 +122,28 @@ app.post('/api', apiRateLimiter, async (req, res) => {
     }
 });
 
+async function logRequest(body, res) {
+    // append data to logs/MM-DD-YYYY.log
+    // organize json
+    const date = new Date();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    const dateString = `${month}-${day}-${year}`;
+    const logFile = `logs/${dateString}.log`;
+    const logData = {
+        date: dateString,
+        time: date.toLocaleTimeString(),
+        prompt: body.prompt,
+        rfc: body.rfc,
+        rfcContent: body.rfcContent,
+        response: res.response,
+        tokensUsed: res.tokensUsed,
+        err: res.err
+    };
+    const logString = JSON.stringify(logData, null, 2);
+    await fs.promises.appendFile(logFile, logString + ',\n');
+}
 // test endpoint at /
 app.get('/', (req, res) => {
     res.send('vscode-gpt-automate API up and running!');
