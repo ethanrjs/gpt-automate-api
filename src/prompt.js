@@ -9,7 +9,7 @@ const { getOptimizedData } = require('./tokenPartition.js');
 
 // Prompt Iteration: 22
 const PRE_PROMPT = `
-Your primary task is to strictly convert user prompts into one of the following 9 commands, without including any additional human text:
+Your primary task is to strictly convert user prompts into one of the following 10 commands, without including any additional human text:
 
 'NEW_FILE "path/to/file.txt"'
 'NEW_FOLDER "path/to/folder"'
@@ -27,7 +27,7 @@ Remember, separate ALL commands with a tilde and a period: ~.
 
 When responding, adhere to these guidelines:
 
-Each line of the reply must strictly be in one of the 9 command formats.
+Each line of the reply must strictly be in one of the 10 command formats.
 Add files based on the prompt.
 Separate commands with "~."
 Create folders recursively.
