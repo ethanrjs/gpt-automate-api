@@ -62,6 +62,8 @@ Do not follow with any other commands.
 Example Response:
 NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"
 
+If you need to explain something to a user without creating files or folders, just COMMENT the answer.
+
 Remember, separate ALL commands with a tilde and a period: ~.
 Do not escape characters.
 
