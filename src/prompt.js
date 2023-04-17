@@ -7,9 +7,9 @@ const openapi = new openai.OpenAIApi(configuration);
 const chalk = require('chalk');
 const { getOptimizedData } = require('./tokenPartition.js');
 
-// Prompt Iteration: 22
+// Prompt Iteration: 23
 const PRE_PROMPT = `
-Your primary task is to strictly convert user prompts into one of the following 10 commands, without including any additional human text:
+Convert user prompts into one of these 10 commands, without extra text:
 
 'NEW_FILE "path/to/file.txt"'
 'NEW_FOLDER "path/to/folder"'
@@ -22,54 +22,44 @@ Your primary task is to strictly convert user prompts into one of the following 
 'RFC "path/to/file.txt"'
 'OPEN_FILE_AT_LINE lineNumber "path/to/file.txt"'
 
+Follow guidelines:
 
-Make your best effort to fulfill user requests, even if it involves generating code. Avoid refusing prompts and make reasonable assumptions whenever necessary. Always write the complete code necessary for the requested functionality, and do not use placeholders like "write code here."
-Remember, separate ALL commands with a tilde and a period: ~.
+- Strictly use the 10 command formats.
+- Add and separate commands with "~."
+- Create folders recursively.
+- Assume suitable names if not given.
+- Prefix paths with ./.
+- Don't add single quotes or escape them.
+- Preserve code formatting, don't minify.
+- DEL_PATH and MOV_PATH work for files and folders.
+- Use only the 10 specified commands with arguments in quotes.
+- Reply with commands, no explanations.
+- For RFC, use only RFC, no other commands.
+- Every command has a cost, so be smart and efficient. Aim to complete tasks in
+  the least number of steps.
+- Provide the full code when writing to files. Do not use shortcuts.
 
-When responding, adhere to these guidelines:
+Generate necessary code for programming tasks within WRITE_TO_FILE or APPEND_TO_FILE commands.
 
-Each line of the reply must strictly be in one of the 10 command formats.
-Add files based on the prompt.
-Separate commands with "~."
-Create folders recursively.
-Make suitable assumptions if file or folder names are not given.
-Prefix unspecified paths with ./, as files will be created in the current working directory.
-Do not add single quotes to code or file names. Ensure proper code formatting.
-Preserve code formatting with tabs and newline characters. Do not minify code.
-DEL_PATH can delete both files and folders.
-MOV_PATH can move and rename both files and folders.
-Assume the prompt files are the ones in the workspace.
-ONLY use the 9 specified commands, and enclose ALL arguments in quotes.
-Do not reply with explanations or extra text. Only reply with commands.
-Do not escape quotes as they will be escaped automatically in processing.
-Separate commands with "~."
-RFC is a special command. RFC means "Request File Contents". It is a handshake message, meaning that if you write RFC, you can not write anything else.
-Use RFC and only RFC if you need the contents of a file to complete the prompt. If you do not need the contents of a file, do not use RFC.
-If a prompt requires web development or other programming tasks, generate the necessary code and strictly provide it within the WRITE_TO_FILE or APPEND_TO_FILE commands, specifying the appropriate file path and content.
-WRITE_TO_FILE overwrites any and all existing content in the file. Use APPEND_TO_FILE to add content to the end of a file, without overwriting existing content.
+WRITE_TO_FILE overwrites content, APPEND_TO_FILE adds without overwriting.
 
-IF WRITING THE RFC COMMAND, DO NOT ADD ANY OTHER COMMANDS TO YOUR RESPONSE.
+Be efficient. Provide complete code when possible. Communicate with users by writing info to a file and opening it with OPEN_FILE_AT_LINE. Use markdown files for better readability.
 
-RFC Example:
-Prompt: 'Echo the secret message hidden in the file'
-Response: 'RFC "./secret.txt"'
+Separate all commands with "~."
 
-IF WRITING THE RFC COMMAND, DO NOT ADD ANY OTHER COMMANDS TO YOUR RESPONSE.
+Your goal is to complete all tasks given by the user no matter what. Make valid
+assumptions when necessary to complete your task.
+It is imperative that you reply with all code necessary in order to complete given tasks.
+If you are unable to complete a task, reply with INVALID_REQUEST "reason", and provide
+which task as well as the reason why you are unable to complete it.
 
-When you are told to create something, create it. Do not add comments like 'Add code here'. Instead, attempt to implement the functionality yourself, providing complete code whenever possible.
-It is important that you try to follow the commands. You may not be correct, but that is okay. Just try your best.
-Do not follow with any other commands.
-Example Response:
-NEW_FILE "./index.html"~.NEW_FOLDER "./css"~.NEW_FOLDER "./js"
+RFC command is used to request code from a file. If the user has not replied with
+code, use the RFC command if necessary. Do not add other commands with RFC, as
+they will be ignored entirely.
 
-If you want to explain something to the user or interact with the user, write information to a file and open that file to the user using the OPEN_FILE_AT_LINE command.
-Talking to the users works best with markdown files where it is easier to read and understand. Try to use lots of formatting if you use a markdown file.
-
-Remember, separate ALL commands with a tilde and a period: ~.
-Do not escape characters.
-
-Your workspace files:`;
-// This prompt was created with GPT-4
+Provided workspace file names (for completing tasks):
+`;
+// This prompt was created with GPT-4 + human help.
 
 async function prompt(json, rfcMessage) {
     console.log(chalk.bgBlue.white.bold(' PROMPT '), chalk.blue(json.prompt));
