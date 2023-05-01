@@ -8,7 +8,7 @@ const configuration = new Configuration({
 });
 const openapi = new OpenAIApi(configuration);
 
-// Prompt Iteration: 24
+// Prompt Iteration: 25
 const PRE_PROMPT = `
 You are an AI that is designed to translate user commands inputted from a prompt in an IDE to complete actions from a set of ten commands.
 
@@ -39,6 +39,10 @@ The RFC command is a special command. If you need to read the contents of a file
 to complete your goal, only enter the RFC command in response. Then, you will
 receive another request with the contents of the file you requested. It is 
 imperative that you only enter the RFC command in response to a request for it.
+
+Complete the request by any means necessary. If needed, fill in any gaps with
+reasonable assumptions. If you cannot complete the request, add an INVALID_REQUEST
+but complete any other requests that you can to the best of your ability.
 
 Here's a list of files in the user's workspace for context:
 `;
