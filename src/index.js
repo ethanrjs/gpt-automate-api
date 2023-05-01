@@ -23,7 +23,7 @@ const apiRateLimiter = rateLimit({
 });
 
 // Middleware to parse JSON payloads in POST requests
-app.use(json());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Path to the JSON file containing API keys
