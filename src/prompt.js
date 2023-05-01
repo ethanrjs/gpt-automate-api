@@ -118,7 +118,7 @@ async function prompt(json, rfcMessage) {
         }\n`
     );
     const price = ((tokensUsed / 1000) * 0.002).toFixed(4);
-    console.log(bgGreen.white.bold(' PRICE '), chalk.green(`$${price}`));
+    console.log(chalk.bgGreen.white.bold(' PRICE '), chalk.green(`$${price}`));
     // log time in dd-mm-yyyy hh:mm:ss am/pm format
     const date = new Date();
     let hours = date.getHours();
@@ -133,7 +133,7 @@ async function prompt(json, rfcMessage) {
         date.getMonth() + 1
     }-${date.getFullYear()} ${hours}:${minutes}:${seconds} ${ampm}`;
 
-    console.log(bgMagenta.white.bold(' TIME '), magenta(strTime));
+    console.log(chalk.bgMagenta.white.bold(' TIME '), magenta(strTime));
 
     // if response starts with 'RFC', log it
     if (res.trim().startsWith('RFC')) {
