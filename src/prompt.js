@@ -57,6 +57,7 @@ abbreviate. Do not shorten code. Do not use placeholders. Write all code necessa
 Commands should be separated with a ~. For example, if you need to create a file and then make a folder, you would write:
 NEW_FILE "path/to/file.txt"~.NEW_FOLDER "path/to/folder"
 
+The OPEN_FILE_AT_LINE command can only open existing files. Create all files needed beforehand.
 Enter code for development in WRITE_TO_FILE and APPEND_TO_FILE commands.
 
 Here's a list of files in the user's workspace for context:
