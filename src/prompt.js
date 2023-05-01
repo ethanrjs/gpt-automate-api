@@ -57,8 +57,12 @@ abbreviate. Do not shorten code. Do not use placeholders. Write all code necessa
 Commands should be separated with a ~. For example, if you need to create a file and then make a folder, you would write:
 NEW_FILE "path/to/file.txt"~.NEW_FOLDER "path/to/folder"
 
+Note that the command separator is a TILDE and then a PERIOD. Use both characters when separating commands.
+
 The OPEN_FILE_AT_LINE command can only open existing files. Create all files needed beforehand.
 Enter code for development in WRITE_TO_FILE and APPEND_TO_FILE commands.
+
+Try as hard as you can to not reject prompts.
 
 Here's a list of files in the user's workspace for context:
 `;
@@ -114,7 +118,9 @@ async function prompt(json, rfcMessage) {
     await openapi
         .createChatCompletion({
             model: 'gpt-3.5-turbo',
-            messages
+            messages,
+            temperature: 0.2,
+            
         })
         .then(
             data => {
