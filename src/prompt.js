@@ -192,6 +192,6 @@ async function prompt(json, rfcMessage) {
     };
 }
 
-export default {
+export {
     prompt
 };
