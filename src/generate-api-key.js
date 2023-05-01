@@ -1,13 +1,13 @@
-const fs = require('fs');
-const crypto = require('crypto');
-const uuid = require('uuid');
-const chalk = require('chalk');
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { createHash } from 'crypto';
+import { v4 } from 'uuid';
+import { red, green } from 'chalk';
 
 const apiKeysFile = 'apiKeys.json';
 
 function readApiKeys() {
-    if (fs.existsSync(apiKeysFile)) {
-        const data = fs.readFileSync(apiKeysFile);
+    if (existsSync(apiKeysFile)) {
+        const data = readFileSync(apiKeysFile);
         return JSON.parse(data);
     } else {
         return [];
@@ -15,15 +15,12 @@ function readApiKeys() {
 }
 
 function writeApiKeys(apiKeys) {
-    fs.writeFileSync(apiKeysFile, JSON.stringify(apiKeys, null, 2));
+    writeFileSync(apiKeysFile, JSON.stringify(apiKeys, null, 2));
 }
 
 function generateApiKeys() {
-    const apiKey = uuid.v4();
-    const encryptedApiKey = crypto
-        .createHash('sha256')
-        .update(apiKey)
-        .digest('hex');
+    const apiKey = v4();
+    const encryptedApiKey = createHash('sha256').update(apiKey).digest('hex');
 
     const isPremium = process.argv[2].toLowerCase().includes('--premium');
     // get email from args
@@ -36,7 +33,7 @@ function generateApiKeys() {
 
     const email = isPremium || isAdmin ? process.argv[3] : process.argv[2];
     if (!email.includes('@')) {
-        console.log('Invalid email address:', chalk.red(email));
+        console.log('Invalid email address:', red(email));
         return;
     }
     const premiumTokens = 7_000_000; // 7 million tokens -- $14 worth of credits ($1 profit for dev)
@@ -60,7 +57,7 @@ function generateApiKeys() {
     apiKeys.push(newEntry);
     writeApiKeys(apiKeys);
 
-    console.log('API Key generated:', chalk.green(apiKey));
+    console.log('API Key generated:', green(apiKey));
 }
 
 generateApiKeys();

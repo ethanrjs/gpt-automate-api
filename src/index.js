@@ -1,12 +1,12 @@
-const fs = require('fs');
-const express = require('express');
-const bodyParser = require('body-parser');
-const crypto = require('crypto');
-const chalk = require('chalk');
+import { existsSync, readFileSync, writeFileSync, promises } from 'fs';
+import express from 'express';
+import { json } from 'body-parser';
+import { createHash } from 'crypto';
+import { bgGreen, bgRed } from 'chalk';
 const app = express();
-const { prompt } = require('./prompt.js');
+import { prompt } from './prompt.js';
 
-const rateLimit = require('express-rate-limit');
+import rateLimit from 'express-rate-limit';
 
 const apiRateLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
@@ -21,15 +21,15 @@ const apiRateLimiter = rateLimit({
 });
 
 // Middleware to parse JSON payloads in POST requests
-app.use(bodyParser.json());
+app.use(json());
 
 // Path to the JSON file containing API keys
 const apiKeysFile = 'apiKeys.json';
 
 // Function to read API keys from JSON file
 function readApiKeys() {
-    if (fs.existsSync(apiKeysFile)) {
-        const data = fs.readFileSync(apiKeysFile);
+    if (existsSync(apiKeysFile)) {
+        const data = readFileSync(apiKeysFile);
         return JSON.parse(data);
     } else {
         return [];
@@ -38,15 +38,12 @@ function readApiKeys() {
 
 // Function to update API keys in JSON file
 function writeApiKeys(apiKeys) {
-    fs.writeFileSync(apiKeysFile, JSON.stringify(apiKeys, null, 2));
+    writeFileSync(apiKeysFile, JSON.stringify(apiKeys, null, 2));
 }
 
 // Function to validate API key and update its usage data
 function validateAndUpdateApiKey(apiKey) {
-    const encryptedApiKey = crypto
-        .createHash('sha256')
-        .update(apiKey)
-        .digest('hex');
+    const encryptedApiKey = createHash('sha256').update(apiKey).digest('hex');
     const apiKeys = readApiKeys();
     const apiKeyEntry = apiKeys.find(entry => entry.apiKey === encryptedApiKey);
 
@@ -71,19 +68,17 @@ app.post('/api', apiRateLimiter, async (req, res) => {
     if (promptIsValid && keyIsValid) {
         const isValid = validateAndUpdateApiKey(apiKey);
         if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
-        console.log(chalk.bgGreen.white.bold('\n\n\n<<< NEW PROMPT >>>'));
+        console.log(bgGreen.white.bold('\n\n\n<<< NEW PROMPT >>>'));
 
         let response = await prompt(req.body, req.body.rfcContent || '');
 
         console.log(
-            chalk.bgGreen.white.bold(' RFC REPLY? ') +
-                (req.body.rfc ? 'YES' : 'NO')
+            bgGreen.white.bold(' RFC REPLY? ') + (req.body.rfc ? 'YES' : 'NO')
         );
 
         // add response.tokensUsed to the apiKeys.json file
         const apiKeys = readApiKeys();
-        const encryptedApiKey = crypto
-            .createHash('sha256')
+        const encryptedApiKey = createHash('sha256')
             .update(apiKey)
             .digest('hex');
         const apiKeyEntry = apiKeys.find(
@@ -101,7 +96,7 @@ app.post('/api', apiRateLimiter, async (req, res) => {
             res.json(response.response);
         }
     } else {
-        console.log(chalk.bgRed.white.bold(' INVALID REQUEST! '));
+        console.log(bgRed.white.bold(' INVALID REQUEST! '));
         res.status(400).json({ error: 'Invalid request' });
     }
 });
@@ -126,7 +121,7 @@ async function logRequest(body, res) {
         err: res.err
     };
     const logString = JSON.stringify(logData, null, 2);
-    await fs.promises.appendFile(logFile, logString + ',\n');
+    await promises.appendFile(logFile, logString + ',\n');
 }
 // test endpoint at /
 app.get('/', (req, res) => {
