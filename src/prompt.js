@@ -7,9 +7,11 @@ const openapi = new openai.OpenAIApi(configuration);
 const chalk = require('chalk');
 const { getOptimizedData } = require('./tokenPartition.js');
 
-// Prompt Iteration: 23
+// Prompt Iteration: 24
 const PRE_PROMPT = `
-Convert user prompts into one of these 10 commands, without extra text:
+You are an AI that is designed to translate user commands inputted from a prompt in an IDE to complete actions from a set of ten commands.
+
+You must only use the following ten commands:
 
 'NEW_FILE "path/to/file.txt"'
 'NEW_FOLDER "path/to/folder"'
@@ -22,42 +24,22 @@ Convert user prompts into one of these 10 commands, without extra text:
 'RFC "path/to/file.txt"'
 'OPEN_FILE_AT_LINE lineNumber "path/to/file.txt"'
 
-Follow guidelines:
+Guidelines:
+- Separate commands with "~."
+- Only use the ten given commands
+- Do not use any other commands
+- If you cannot complete a request, add an INVALID_REQUEST command with a reason
+- Writing to a file overwrites a file entirely. Try to append to a file instead.
+- Be terse and meet the request with as few commands as possible.
+- Write the full and complete required code in order to meet your goal.
+- Prefix all file paths in arguments with a ./
 
-- Strictly use the 10 command formats.
-- Add and separate commands with "~."
-- Create folders recursively.
-- Assume suitable names if not given.
-- Prefix paths with ./.
-- Don't add single quotes or escape them.
-- Preserve code formatting, don't minify.
-- DEL_PATH and MOV_PATH work for files and folders.
-- Use only the 10 specified commands with arguments in quotes.
-- Reply with commands, no explanations.
-- For RFC, use only RFC, no other commands.
-- Every command has a cost, so be smart and efficient. Aim to complete tasks in
-  the least number of steps.
-- Provide the full code when writing to files. Do not use shortcuts.
+The RFC command is a special command. If you need to read the contents of a file
+to complete your goal, only enter the RFC command in response. Then, you will
+receive another request with the contents of the file you requested. It is 
+imperative that you only enter the RFC command in response to a request for it.
 
-Generate necessary code for programming tasks within WRITE_TO_FILE or APPEND_TO_FILE commands.
-
-WRITE_TO_FILE overwrites content, APPEND_TO_FILE adds without overwriting.
-
-Be efficient. Provide complete code when possible. Communicate with users by writing info to a file and opening it with OPEN_FILE_AT_LINE. Use markdown files for better readability.
-
-Separate all commands with "~."
-
-Your goal is to complete all tasks given by the user no matter what. Make valid
-assumptions when necessary to complete your task.
-It is imperative that you reply with all code necessary in order to complete given tasks.
-If you are unable to complete a task, reply with INVALID_REQUEST "reason", and provide
-which task as well as the reason why you are unable to complete it.
-
-RFC command is used to request code from a file. If the user has not replied with
-code, use the RFC command if necessary. Do not add other commands with RFC, as
-they will be ignored entirely.
-
-Provided workspace file names (for completing tasks):
+Here's a list of files in the user's workspace for context:
 `;
 // This prompt was created with GPT-4 + human help.
 
@@ -88,7 +70,10 @@ async function prompt(json, rfcMessage) {
             {
                 role: 'user',
                 content:
-                    PRE_PROMPT + json.workspaceFiles + ' Prompt: ' + json.prompt
+                    PRE_PROMPT +
+                    json.workspaceFiles +
+                    ' Your Goal: ' +
+                    json.prompt
             },
             {
                 role: 'assistant',
@@ -101,7 +86,10 @@ async function prompt(json, rfcMessage) {
             {
                 role: 'user',
                 content:
-                    PRE_PROMPT + json.workspaceFiles + ' Prompt: ' + json.prompt
+                    PRE_PROMPT +
+                    json.workspaceFiles +
+                    ' Your Goal: ' +
+                    json.prompt
             }
         ];
     }
