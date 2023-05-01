@@ -2,7 +2,7 @@ import {
   existsSync, readFileSync, writeFileSync, promises,
 } from 'fs';
 import express from 'express';
-import { json } from 'body-parser';
+import bodyParser from 'body-parser';
 import { createHash } from 'crypto';
 import chalk from 'chalk';
 import rateLimit from 'express-rate-limit';
@@ -24,6 +24,7 @@ const apiRateLimiter = rateLimit({
 
 // Middleware to parse JSON payloads in POST requests
 app.use(json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Path to the JSON file containing API keys
 const apiKeysFile = 'apiKeys.json';
