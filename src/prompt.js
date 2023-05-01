@@ -142,7 +142,7 @@ async function prompt(json, rfcMessage) {
         date.getMonth() + 1
     }-${date.getFullYear()} ${hours}:${minutes}:${seconds} ${ampm}`;
 
-    console.log(chalk.bgMagenta.white.bold(' TIME '), magenta(strTime));
+    console.log(chalk.bgMagenta.white.bold(' TIME '), chalk.magenta(strTime));
 
     // if response starts with 'RFC', log it
     if (res.trim().startsWith('RFC')) {
