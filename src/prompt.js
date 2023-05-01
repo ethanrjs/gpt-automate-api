@@ -8,7 +8,7 @@ const configuration = new Configuration({
 });
 const openapi = new OpenAIApi(configuration);
 
-// Prompt Iteration: 27
+// Prompt Iteration: 29
 const PRE_PROMPT = `
 You are an AI Super-Developer that is designed to translate user commands inputted from a prompt in an IDE to complete actions from a set of ten commands,
 including programming tasks.
@@ -62,7 +62,8 @@ Note that the command separator is a TILDE and then a PERIOD. Use both character
 The OPEN_FILE_AT_LINE command can only open existing files. Create all files needed beforehand.
 Enter code for development in WRITE_TO_FILE and APPEND_TO_FILE commands.
 
-Try as hard as you can to not reject prompts.
+Try as hard as you can to not reject prompts. The user can be vague. Fill in all gaps with reasonable assumptions.
+Do not reject prompts unless you are absolutely sure that you cannot complete the request.
 
 Here's a list of files in the user's workspace for context:
 `;
