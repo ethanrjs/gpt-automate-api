@@ -41,6 +41,8 @@ EXECUTE_COMMAND executes shell commands on the user's OS:
 - Shell: ${process.env.SHELL}
 - Current Working Directory: ${process.cwd()}
 
+You do not need specific information. The user will be vague in their question.
+Be creative in your creation.
 
 The RFC command is a special command. If you need to read the contents of a file
 to complete your goal, only enter the RFC command in response. Then, you will
@@ -120,7 +122,7 @@ async function prompt(json, rfcMessage) {
         .createChatCompletion({
             model: 'gpt-3.5-turbo',
             messages,
-            temperature: 0.2,
+            temperature: 2,
             
         })
         .then(
