@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { createHash } from 'crypto';
 import { v4 } from 'uuid';
-import { red, green } from 'chalk';
+import chalk from 'chalk';
 
 const apiKeysFile = 'apiKeys.json';
 
@@ -32,7 +32,7 @@ function generateApiKeys() {
 
     const email = isPremium || isAdmin ? process.argv[3] : process.argv[2];
     if (!email.includes('@')) {
-        console.log('Invalid email address:', red(email));
+        console.log('Invalid email address:', chalk.red(email));
         return;
     }
     const premiumTokens = 7_000_000; // 7 million tokens -- $14 worth of credits ($1 profit for dev)
@@ -56,7 +56,7 @@ function generateApiKeys() {
     apiKeys.push(newEntry);
     writeApiKeys(apiKeys);
 
-    console.log('API Key generated:', green(apiKey));
+    console.log('API Key generated:', chalk.green(apiKey));
 }
 
 generateApiKeys();

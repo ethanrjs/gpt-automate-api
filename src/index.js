@@ -4,7 +4,7 @@ import {
 import express from 'express';
 import { json } from 'body-parser';
 import { createHash } from 'crypto';
-import { bgGreen, bgRed } from 'chalk';
+import chalk from 'chalk';
 import rateLimit from 'express-rate-limit';
 import { prompt } from './prompt.js';
 
@@ -68,12 +68,12 @@ app.post('/api', apiRateLimiter, async (req, res) => {
   if (promptIsValid && keyIsValid) {
     const isValid = validateAndUpdateApiKey(apiKey);
     if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
-    console.log(bgGreen.white.bold('\n\n\n<<< NEW PROMPT >>>'));
+    console.log(chalk.bgGreen.white.bold('\n\n\n<<< NEW PROMPT >>>'));
 
     const response = await prompt(req.body, req.body.rfcContent || '');
 
     console.log(
-      bgGreen.white.bold(' RFC REPLY? ') + (req.body.rfc ? 'YES' : 'NO'),
+      chalk.bgGreen.white.bold(' RFC REPLY? ') + (req.body.rfc ? 'YES' : 'NO'),
     );
 
     // add response.tokensUsed to the apiKeys.json file
@@ -96,7 +96,7 @@ app.post('/api', apiRateLimiter, async (req, res) => {
       res.json(response.response);
     }
   } else {
-    console.log(bgRed.white.bold(' INVALID REQUEST! '));
+    console.log(chalk.bgRed.white.bold(' INVALID REQUEST! '));
     res.status(400).json({ error: 'Invalid request' });
   }
 });
