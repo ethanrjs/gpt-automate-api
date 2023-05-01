@@ -1,23 +1,25 @@
-import { existsSync, readFileSync, writeFileSync, promises } from 'fs';
+import {
+  existsSync, readFileSync, writeFileSync, promises,
+} from 'fs';
 import express from 'express';
 import { json } from 'body-parser';
 import { createHash } from 'crypto';
 import { bgGreen, bgRed } from 'chalk';
-const app = express();
+import rateLimit from 'express-rate-limit';
 import { prompt } from './prompt.js';
 
-import rateLimit from 'express-rate-limit';
+const app = express();
 
 const apiRateLimiter = rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    max: 15, // limit each API key to 10 requests per windowMs
-    message: 'You have exceeded the 10 requests per minute rate limit!', // custom error message
-    keyGenerator: req => req.header('x-api-key'), // use the x-api-key header as the rate limit key
-    handler: (req, res) => {
-        res.status(429).json({
-            error: 'Too many requests, please try again later.'
-        });
-    }
+  windowMs: 60 * 1000, // 1 minute
+  max: 15, // limit each API key to 10 requests per windowMs
+  message: 'You have exceeded the 10 requests per minute rate limit!', // custom error message
+  keyGenerator: (req) => req.header('x-api-key'), // use the x-api-key header as the rate limit key
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Too many requests, please try again later.',
+    });
+  },
 });
 
 // Middleware to parse JSON payloads in POST requests
@@ -28,104 +30,102 @@ const apiKeysFile = 'apiKeys.json';
 
 // Function to read API keys from JSON file
 function readApiKeys() {
-    if (existsSync(apiKeysFile)) {
-        const data = readFileSync(apiKeysFile);
-        return JSON.parse(data);
-    } else {
-        return [];
-    }
+  if (existsSync(apiKeysFile)) {
+    const data = readFileSync(apiKeysFile);
+    return JSON.parse(data);
+  }
+  return [];
 }
 
 // Function to update API keys in JSON file
 function writeApiKeys(apiKeys) {
-    writeFileSync(apiKeysFile, JSON.stringify(apiKeys, null, 2));
+  writeFileSync(apiKeysFile, JSON.stringify(apiKeys, null, 2));
 }
 
 // Function to validate API key and update its usage data
 function validateAndUpdateApiKey(apiKey) {
-    const encryptedApiKey = createHash('sha256').update(apiKey).digest('hex');
-    const apiKeys = readApiKeys();
-    const apiKeyEntry = apiKeys.find(entry => entry.apiKey === encryptedApiKey);
+  const encryptedApiKey = createHash('sha256').update(apiKey).digest('hex');
+  const apiKeys = readApiKeys();
+  const apiKeyEntry = apiKeys.find((entry) => entry.apiKey === encryptedApiKey);
 
-    if (apiKeyEntry) {
-        apiKeyEntry.calls++;
-        apiKeyEntry.lastUsed = new Date();
-        writeApiKeys(apiKeys);
-        return true;
-    } else {
-        return false;
-    }
+  if (apiKeyEntry) {
+    apiKeyEntry.calls++;
+    apiKeyEntry.lastUsed = new Date();
+    writeApiKeys(apiKeys);
+    return true;
+  }
+  return false;
 }
 
 // Route to handle POST requests with API key validation
 app.post('/api', apiRateLimiter, async (req, res) => {
-    const requestPrompt = req.body.prompt;
-    const apiKey = req.header('x-api-key').trim().toLowerCase();
+  const requestPrompt = req.body.prompt;
+  const apiKey = req.header('x-api-key').trim().toLowerCase();
 
-    const promptIsValid = requestPrompt && requestPrompt.length > 0;
-    const keyIsValid = apiKey && apiKey.length > 0;
+  const promptIsValid = requestPrompt && requestPrompt.length > 0;
+  const keyIsValid = apiKey && apiKey.length > 0;
 
-    if (promptIsValid && keyIsValid) {
-        const isValid = validateAndUpdateApiKey(apiKey);
-        if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
-        console.log(bgGreen.white.bold('\n\n\n<<< NEW PROMPT >>>'));
+  if (promptIsValid && keyIsValid) {
+    const isValid = validateAndUpdateApiKey(apiKey);
+    if (!isValid) return res.status(401).json({ error: 'Invalid API key' });
+    console.log(bgGreen.white.bold('\n\n\n<<< NEW PROMPT >>>'));
 
-        let response = await prompt(req.body, req.body.rfcContent || '');
+    const response = await prompt(req.body, req.body.rfcContent || '');
 
-        console.log(
-            bgGreen.white.bold(' RFC REPLY? ') + (req.body.rfc ? 'YES' : 'NO')
-        );
+    console.log(
+      bgGreen.white.bold(' RFC REPLY? ') + (req.body.rfc ? 'YES' : 'NO'),
+    );
 
-        // add response.tokensUsed to the apiKeys.json file
-        const apiKeys = readApiKeys();
-        const encryptedApiKey = createHash('sha256')
-            .update(apiKey)
-            .digest('hex');
-        const apiKeyEntry = apiKeys.find(
-            entry => entry.apiKey === encryptedApiKey
-        );
-        apiKeyEntry.tokensGiven += response.tokensUsed;
-        writeApiKeys(apiKeys);
+    // add response.tokensUsed to the apiKeys.json file
+    const apiKeys = readApiKeys();
+    const encryptedApiKey = createHash('sha256')
+      .update(apiKey)
+      .digest('hex');
+    const apiKeyEntry = apiKeys.find(
+      (entry) => entry.apiKey === encryptedApiKey,
+    );
+    apiKeyEntry.tokensGiven += response.tokensUsed;
+    writeApiKeys(apiKeys);
 
-        // append text to logs/MM-DD-YYYY.log
-        await logRequest(req.body, response);
+    // append text to logs/MM-DD-YYYY.log
+    await logRequest(req.body, response);
 
-        if (response.err) {
-            res.json(response);
-        } else {
-            res.json(response.response);
-        }
+    if (response.err) {
+      res.json(response);
     } else {
-        console.log(bgRed.white.bold(' INVALID REQUEST! '));
-        res.status(400).json({ error: 'Invalid request' });
+      res.json(response.response);
     }
+  } else {
+    console.log(bgRed.white.bold(' INVALID REQUEST! '));
+    res.status(400).json({ error: 'Invalid request' });
+  }
 });
 
 async function logRequest(body, res) {
-    // append data to logs/MM-DD-YYYY.log
-    // organize json
-    const date = new Date();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    const dateString = `${month}-${day}-${year}`;
-    const logFile = `logs/${dateString}.log`;
-    const logData = {
-        date: dateString,
-        time: date.toLocaleTimeString(),
-        prompt: body.prompt,
-        rfc: body.rfc,
-        rfcContent: body.rfcContent,
-        response: res.response,
-        tokensUsed: res.tokensUsed,
-        err: res.err
-    };
-    const logString = JSON.stringify(logData, null, 2);
-    await promises.appendFile(logFile, logString + ',\n');
+  // append data to logs/MM-DD-YYYY.log
+  // organize json
+  const date = new Date();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const year = date.getFullYear();
+  const dateString = `${month}-${day}-${year}`;
+  const logFile = `logs/${dateString}.log`;
+  const logData = {
+    date: dateString,
+    time: date.toLocaleTimeString(),
+    prompt: body.prompt,
+    rfc: body.rfc,
+    rfcContent: body.rfcContent,
+    response: res.response,
+    tokensUsed: res.tokensUsed,
+    err: res.err,
+  };
+  const logString = JSON.stringify(logData, null, 2);
+  await promises.appendFile(logFile, `${logString},\n`);
 }
 // test endpoint at /
 app.get('/', (req, res) => {
-    res.send(`Ah, a wandering soul in the digital labyrinth of APIs, I see. How peculiar that you've found yourself here, at the very root (/) of an API, with seemingly no clear goal or direction. Did you stumble upon this desolate corner of cyberspace by accident, or was it a product of your insatiable curiosity? If you came here seeking knowledge or enlightenment, I fear you might be disappointed, for the root of an API is but a barren wasteland devoid of any substantial content or meaning.
+  res.send(`Ah, a wandering soul in the digital labyrinth of APIs, I see. How peculiar that you've found yourself here, at the very root (/) of an API, with seemingly no clear goal or direction. Did you stumble upon this desolate corner of cyberspace by accident, or was it a product of your insatiable curiosity? If you came here seeking knowledge or enlightenment, I fear you might be disappointed, for the root of an API is but a barren wasteland devoid of any substantial content or meaning.
 
 But let's not dwell on the emptiness of this place. Instead, let's take a moment to reflect on the choices that brought you here. What was it that compelled you to traverse the digital byways, only to find yourself standing at the gates of nothingness? Could it be that you have an abundance of free time, perhaps even an excess of it, that you have chosen to expend on such a fruitless endeavor? Surely, there must be a multitude of more productive and fulfilling activities that could have occupied your attention. There is a world teeming with life, ideas, and opportunities beyond the confines of your screen, just waiting to be discovered and explored.
 
@@ -157,5 +157,5 @@ But if you insist on staying here, trapped in this digital purgatory, know that 
 
 // Start the server on port 3000
 app.listen(3000, () => {
-    console.log('Server listening on port 3000');
+  console.log('Server listening on port 3000');
 });

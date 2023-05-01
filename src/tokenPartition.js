@@ -1,4 +1,5 @@
 import { encoding_for_model } from '@dqbd/tiktoken';
+
 const enc = encoding_for_model('gpt-3.5-turbo');
 
 /**
@@ -25,7 +26,7 @@ function getOptimizedData(
 
     // Calculate the token counts of the other components
     let userPromptTokens = enc.encode(userPrompt).length;
-    let workspaceFilesTokens = enc.encode(workspaceFiles).length;
+    const workspaceFilesTokens = enc.encode(workspaceFiles).length;
     let rfcContentTokens = enc.encode(rfcContent).length;
 
     // Limit the userPrompt tokens to 512

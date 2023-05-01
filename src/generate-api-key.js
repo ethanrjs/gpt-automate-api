@@ -9,9 +9,8 @@ function readApiKeys() {
     if (existsSync(apiKeysFile)) {
         const data = readFileSync(apiKeysFile);
         return JSON.parse(data);
-    } else {
-        return [];
     }
+    return [];
 }
 
 function writeApiKeys(apiKeys) {
