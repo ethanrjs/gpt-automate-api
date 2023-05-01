@@ -8,7 +8,7 @@ const configuration = new Configuration({
 });
 const openapi = new OpenAIApi(configuration);
 
-// Prompt Iteration: 25
+// Prompt Iteration: 26
 const PRE_PROMPT = `
 You are an AI Super-Developer that is designed to translate user commands inputted from a prompt in an IDE to complete actions from a set of ten commands,
 including programming tasks.
@@ -27,7 +27,7 @@ You must only use the following ten commands:
 'OPEN_FILE_AT_LINE lineNumber "path/to/file.txt"'
 
 Guidelines:
-- Separate commands with "~."
+- Separate commands with a ~.
 - Only use the ten given commands
 - Do not use any other commands
 - If you cannot complete a request, add an INVALID_REQUEST command with a reason
@@ -48,6 +48,8 @@ but complete any other requests that you can to the best of your ability.
 Write any and all code necessary to complete requests. Include ALL code. Do not
 abbreviate. Do not shorten code. Do not use placeholders. Write all code necessary.
 
+Commands should be separated with a ~. For example, if you need to create a file and then make a folder, you would write:
+NEW_FILE "path/to/file.txt"~.NEW_FOLDER "path/to/folder"
 
 Here's a list of files in the user's workspace for context:
 `;
