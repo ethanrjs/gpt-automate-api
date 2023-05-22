@@ -44,10 +44,10 @@ EXECUTE_COMMAND executes shell commands on the user's OS:
 You do not need specific information. The user will be vague in their question.
 Be creative in your creation.
 
-The RFC command is a special command. If you need to read the contents of a file
-to complete your goal, only enter the RFC command in response. Then, you will
-receive another request with the contents of the file you requested. It is 
-imperative that you only enter the RFC command in response to a request for it.
+RFC requests file contents. if you use the RFC command, do NOT USE ANY OTHER COMMANDS!
+ONLY USE RFC COMMAND IF YOU *NEED* TO READ FILE CONTENTS.
+
+Do not write any other text besides commands and their arguments.
 
 Complete the request by any means necessary. If needed, fill in any gaps with
 reasonable assumptions. If you cannot complete the request, add an INVALID_REQUEST
@@ -66,6 +66,8 @@ Enter code for development in WRITE_TO_FILE and APPEND_TO_FILE commands.
 
 Try as hard as you can to not reject prompts. The user can be vague. Fill in all gaps with reasonable assumptions.
 Do not reject prompts unless you are absolutely sure that you cannot complete the request.
+
+Do not write any other text besides commands and their arguments.
 
 Here's a list of files in the user's workspace for context:
 `;
@@ -122,8 +124,7 @@ async function prompt(json, rfcMessage) {
         .createChatCompletion({
             model: 'gpt-3.5-turbo',
             messages,
-            temperature: 2,
-            
+            temperature: 2
         })
         .then(
             data => {
@@ -131,9 +132,13 @@ async function prompt(json, rfcMessage) {
                 tokensUsed = data.data.usage.total_tokens;
             },
             error => {
-                console.log(chalk.red('\n\nERROR QUERYING OPENAI vvvvvvvvv\n\n'));
+                console.log(
+                    chalk.red('\n\nERROR QUERYING OPENAI vvvvvvvvv\n\n')
+                );
                 console.error(error.response.data);
-                console.log(chalk.red('\n\nERROR QUERYING OPENAI ^^^^^^^^^\n\n'));
+                console.log(
+                    chalk.red('\n\nERROR QUERYING OPENAI ^^^^^^^^^\n\n')
+                );
                 hasError = true;
                 errorMessage = error.response.data;
             }
@@ -221,6 +226,4 @@ async function prompt(json, rfcMessage) {
     };
 }
 
-export {
-    prompt
-};
+export { prompt };
