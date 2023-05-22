@@ -1,6 +1,6 @@
 import { encoding_for_model } from '@dqbd/tiktoken';
 
-const enc = encoding_for_model('gpt-3.5-turbo');
+const enc = encoding_for_model('gpt-4');
 
 /**
  * This function balances the token counts of userPrompt, workspaceFiles, and rfcContent.

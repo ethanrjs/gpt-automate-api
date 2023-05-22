@@ -121,7 +121,7 @@ async function prompt(json, rfcMessage) {
 
     await openapi
         .createChatCompletion({
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4',
             messages
         })
         .then(
@@ -181,7 +181,7 @@ async function prompt(json, rfcMessage) {
         const rfcContent = rfcMessage.substring(0, 100);
         console.log(
             chalk.bgGreen.black.bold(' RFC RECEIVED '),
-            chalk.green(`${rfcContent}...`)
+            chalk.green(`'${rfcContent}'`)
         );
     }
 
