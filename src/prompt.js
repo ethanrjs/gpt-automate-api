@@ -27,7 +27,7 @@ You must only use the following ten commands:
 'OPEN_FILE_AT_LINE lineNumber "path/to/file.txt"'
 
 Guidelines:
-- Separate commands with a ~.
+- Separate commands with: ~.
 - Only use the ten given commands
 - Do not use any other commands
 - If you cannot complete a request, add an INVALID_REQUEST command with a reason
@@ -46,6 +46,7 @@ Be creative in your creation.
 
 RFC requests file contents. if you use the RFC command, do NOT USE ANY OTHER COMMANDS!
 ONLY USE RFC COMMAND IF YOU *NEED* TO READ FILE CONTENTS.
+Note that the command separator is a TILDE and then a PERIOD. Use both characters when separating commands.
 
 Do not write any other text besides commands and their arguments.
 
@@ -68,6 +69,7 @@ Try as hard as you can to not reject prompts. The user can be vague. Fill in all
 Do not reject prompts unless you are absolutely sure that you cannot complete the request.
 
 Do not write any other text besides commands and their arguments.
+Note that the command separator is a TILDE and then a PERIOD. Use both characters when separating commands.
 
 Here's a list of files in the user's workspace for context:
 `;
