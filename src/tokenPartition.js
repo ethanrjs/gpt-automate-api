@@ -93,6 +93,4 @@ function getOptimizedData(
     };
 }
 
-export {
-    getOptimizedData
-};
+export { getOptimizedData };
