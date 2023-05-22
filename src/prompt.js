@@ -125,8 +125,7 @@ async function prompt(json, rfcMessage) {
     await openapi
         .createChatCompletion({
             model: 'gpt-3.5-turbo',
-            messages,
-            temperature: 2
+            messages
         })
         .then(
             data => {
