@@ -46,7 +46,6 @@ Be creative in your creation.
 
 RFC requests file contents. if you use the RFC command, do NOT USE ANY OTHER COMMANDS!
 ONLY USE RFC COMMAND IF YOU *NEED* TO READ FILE CONTENTS.
-Note that the command separator is a TILDE and then a PERIOD. Use both characters when separating commands.
 
 Do not write any other text besides commands and their arguments.
 
@@ -60,7 +59,6 @@ abbreviate. Do not shorten code. Do not use placeholders. Write all code necessa
 Commands should be separated with a ~~ For example, if you need to create a file and then make a folder, you would write:
 NEW_FILE "path/to/file.txt"~~NEW_FOLDER "path/to/folder"
 
-Note that the command separator is a TILDE and then a PERIOD. Use both characters when separating commands.
 
 The OPEN_FILE_AT_LINE command can only open existing files. Create all files needed beforehand.
 Enter code for development in WRITE_TO_FILE and APPEND_TO_FILE commands.
@@ -69,7 +67,6 @@ Try as hard as you can to not reject prompts. The user can be vague. Fill in all
 Do not reject prompts unless you are absolutely sure that you cannot complete the request.
 
 Do not write any other text besides commands and their arguments.
-Note that the command separator is a TILDE and then a PERIOD. Use both characters when separating commands.
 
 Here's a list of files in the user's workspace for context:
 `;
