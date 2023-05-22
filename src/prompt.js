@@ -30,7 +30,7 @@ Guidelines:
 - Separate commands with: ~~
 - Only use the ten given commands
 - Do not use any other commands
-- If you cannot complete a request, agit puldd an INVALID_REQUEST command with a reason
+- If you cannot complete a request, add an INVALID_REQUEST command with a reason
 - Writing to a file overwrites a file entirely. Try to append to a file instead.
 - Be terse and meet the request with as few commands as possible.
 - Write the full and complete required code in order to meet your goal.
