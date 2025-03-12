@@ -3,8 +3,8 @@ import chalk from 'chalk';
 import { getOptimizedData } from './tokenPartition.js';
 
 const configuration = new Configuration({
-    organization: 'org-5SQeLQ8rfWqdoiHmo77XPzir',
-    apiKey: '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'
+    organization: 'org-###', // and this is outdated
+    apiKey: 'sk-###' // haha this key was deleted anyways
 });
 const openapi = new OpenAIApi(configuration);
 
